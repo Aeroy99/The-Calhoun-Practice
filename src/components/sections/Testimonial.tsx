@@ -1,7 +1,11 @@
 import { motion } from "motion/react";
-import { cn } from "@/lib/utils";
 
-export function Testimonial() {
+interface TestimonialProps {
+  quote: string;
+  author: string;
+}
+
+export function Testimonial({ quote, author }: TestimonialProps) {
   return (
     <section 
       className="page-section testimonial-section full-bleed-section bg-[var(--siteBackgroundColor)] py-[var(--spacing-section)]"
@@ -43,12 +47,12 @@ export function Testimonial() {
               </svg>
               
               <blockquote className="text-[var(--color-text-primary)] text-xl md:text-2xl font-light italic leading-relaxed mb-6">
-                "I feel so much more confident and grounded after working with the team. The personalized approach really made a difference in my daily life."
+                {quote}
               </blockquote>
               
               <div className="flex items-center justify-center md:justify-start gap-4">
                 <div className="text-[var(--color-text-primary)]">
-                  <cite className="not-italic font-medium block text-lg uppercase tracking-wider text-[hsl(var(--terracotta-main))]">Client</cite>
+                  <cite className="not-italic font-medium block text-lg uppercase tracking-wider text-[hsl(var(--terracotta-main))]">{author}</cite>
                 </div>
               </div>
             </div>

@@ -1,54 +1,54 @@
-# React + TypeScript + Vite
+# The Calhoun Practice Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Marketing website built with React + TypeScript + Vite and deployed on Vercel.
 
-Currently, two official plugins are available:
+## Local development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Use port `5173` for local work.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+yarn install
+yarn dev --host 0.0.0.0 --port 5173
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open [http://localhost:5173](http://localhost:5173).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Storyblok content editing workflow
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+This project supports CMS-driven homepage copy for partner-friendly editing:
+
+- Hero text
+- Introduction text + button label/link
+- CTA heading/badge
+- Testimonial quote/author
+
+If Storyblok env vars are missing, the app automatically falls back to built-in defaults.
+
+### Environment variables
+
+Copy `.env.example` to `.env.local` and set:
+
+- `VITE_STORYBLOK_PREVIEW_TOKEN`
+- `VITE_STORYBLOK_ACCESS_TOKEN`
+- `VITE_STORYBLOK_HOME_SLUG` (default: `home`)
+
+### Preview mode
+
+Use preview URL while editing drafts:
+
+```text
+http://localhost:5173/?preview=1
 ```
+
+## Governance model
+
+- Content edits: partner can edit/publish in Storyblok.
+- Technical changes: raised as GitHub issues, implemented via PR by owner.
+- Rollback options: Storyblok version restore + Vercel deployment rollback + Git revert.
+
+See:
+
+- `docs/publish-safely-checklist.md`
+- `docs/storyblok-setup.md`
+- `docs/storyblok-editor-workflow.md`
+- `.github/ISSUE_TEMPLATE/technical-change-request.yml`

@@ -1,8 +1,12 @@
 import { motion } from "motion/react";
 import { ConsultationForm } from "@/components/ConsultationForm";
-import { cn } from "@/lib/utils";
 
-export function Cta() {
+interface CtaProps {
+  badge: string;
+  heading: string;
+}
+
+export function Cta({ badge, heading }: CtaProps) {
   return (
     <section 
       className="page-section full-bleed-section layout-engine-section background-width--full-bleed section-height--medium content-width--wide horizontal-alignment--center vertical-alignment--middle fluid-engine bg-[hsl(var(--cream))] relative flex items-center justify-center py-[15vh] overflow-hidden"
@@ -20,7 +24,7 @@ export function Cta() {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[hsl(var(--terracotta-main))]/20 text-[hsl(var(--warm-gray))] text-sm font-medium tracking-wide uppercase shadow-sm"
               >
-                <span>Safe Space</span>
+                <span>{badge}</span>
               </motion.div>
               <motion.h2 
                 initial={{ opacity: 0, y: 20 }}
@@ -29,7 +33,7 @@ export function Cta() {
                 transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
                 className="text-3xl md:text-4xl lg:text-[3rem] leading-[1.2] font-serif tracking-tight text-[var(--color-text-primary)]"
               >
-                Ready to get started? Let's connect today.
+                {heading}
               </motion.h2>
             </div>
           </div>

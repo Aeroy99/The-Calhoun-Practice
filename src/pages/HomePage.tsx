@@ -14,20 +14,36 @@ import { Footer } from "@/components/sections/Footer";
 import { SvgDefinitions } from "@/components/sections/SvgDefinitions";
 import { NewsletterPopup } from "@/components/sections/NewsletterPopup";
 import { BodyClosing } from "@/components/sections/BodyClosing";
+import { useCmsHomeContent } from "@/hooks/useCmsHomeContent";
 
 const HomePage = () => {
+  const { content } = useCmsHomeContent();
+
   return (
     <SiteWrapper>
       <Header />
       <MainContentWrapper>
-        <Hero />
-        <Introduction />
+        <Hero
+          badgeLeft={content.hero.badgeLeft}
+          badgeRight={content.hero.badgeRight}
+          heading={content.hero.heading}
+          description={content.hero.description}
+        />
+        <Introduction
+          heading={content.introduction.heading}
+          description={content.introduction.description}
+          buttonText={content.introduction.buttonText}
+          buttonLink={content.introduction.buttonLink}
+        />
         <ServicesGrid />
         <MeetYourTherapists />
         <PracticeManager />
         <LocationMap />
-        <Testimonial />
-        <Cta />
+        <Testimonial
+          quote={content.testimonial.quote}
+          author={content.testimonial.author}
+        />
+        <Cta badge={content.cta.badge} heading={content.cta.heading} />
         {/* Sections will be added here */}
       </MainContentWrapper>
       <FooterWrapper>

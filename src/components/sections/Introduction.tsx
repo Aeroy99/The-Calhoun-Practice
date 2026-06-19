@@ -1,9 +1,20 @@
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
 import { ArchitecturalShadow } from "@/components/ArchitecturalShadow";
 
-export function Introduction() {
+interface IntroductionProps {
+  heading: string;
+  description: string;
+  buttonText: string;
+  buttonLink: string;
+}
+
+export function Introduction({
+  heading,
+  description,
+  buttonText,
+  buttonLink,
+}: IntroductionProps) {
   return (
     <section 
       className="page-section full-bleed-section layout-engine-section background-width--full-bleed section-height--medium content-width--wide horizontal-alignment--center vertical-alignment--middle has-background has-section-divider relative flex items-center justify-center min-h-[60vh] py-[15vh] overflow-hidden"
@@ -33,7 +44,7 @@ export function Introduction() {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="text-[var(--color-text-primary)] text-3xl md:text-4xl lg:text-[3rem] leading-[1.2] font-serif tracking-tight"
               >
-                We're here to help your relationships thrive
+                {heading}
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -42,7 +53,7 @@ export function Introduction() {
                 transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                 className="text-[var(--color-text-primary)] text-lg md:text-xl mt-8 max-w-[700px] mx-auto leading-relaxed font-light"
               >
-                We provide an empathetic, supportive space for you to explore your feelings and work towards a healthier, happier life. Our experienced therapists are dedicated to guiding you through your journey of growth and healing.
+                {description}
               </motion.p>
             </div>
           </div>
@@ -57,10 +68,10 @@ export function Introduction() {
                 transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
               >
                 <Link 
-                  to="/#therapists"
+                  to={buttonLink}
                   className="sqs-block-button-element--medium sqs-button-element--primary inline-flex items-center justify-center bg-[hsl(var(--terracotta-main))] text-white font-medium px-8 py-4 rounded-full transition-all duration-300 hover:bg-[hsl(var(--terracotta-dark))] shadow-sm hover:shadow-md uppercase tracking-wider text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--terracotta-main))] focus-visible:ring-offset-2"
                 >
-                  Meet Founder therapist for Calhoun Practice
+                  {buttonText}
                 </Link>
               </motion.div>
             </div>

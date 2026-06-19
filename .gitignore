@@ -42,3 +42,6 @@ node_modules/
 # IDE
 .idea/
 .vscode/
+.vercel
+.env*
+!.env.example

@@ -1,8 +1,19 @@
 import { motion } from "motion/react";
-import { cn } from "@/lib/utils";
 import { ArchitecturalShadow } from "@/components/ArchitecturalShadow";
 
-export function Hero() {
+interface HeroProps {
+  badgeLeft: string;
+  badgeRight: string;
+  heading: string;
+  description: string;
+}
+
+export function Hero({
+  badgeLeft,
+  badgeRight,
+  heading,
+  description,
+}: HeroProps) {
   return (
     <section 
       className="page-section full-bleed-section layout-engine-section background-width--full-bleed section-height--small content-width--wide horizontal-alignment--center vertical-alignment--middle has-background has-section-divider section-border relative flex items-center justify-center min-h-[70vh] md:min-h-[85vh] py-[15vh] overflow-hidden"
@@ -35,9 +46,9 @@ export function Hero() {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[hsl(var(--cream))]/80 backdrop-blur-sm border border-[hsl(var(--terracotta-main))]/20 text-[hsl(var(--warm-gray))] text-sm font-medium tracking-wide uppercase shadow-sm"
               >
-                <span>Confidential Care</span>
+                <span>{badgeLeft}</span>
                 <span className="w-1 h-1 rounded-full bg-[hsl(var(--terracotta-main))]"></span>
-                <span>Licensed Professionals</span>
+                <span>{badgeRight}</span>
               </motion.div>
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }}
@@ -45,7 +56,7 @@ export function Hero() {
                 transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                 className="text-[var(--color-text-primary)] text-4xl md:text-5xl lg:text-[4rem] leading-[1.15] font-serif tracking-tight max-w-[900px]"
               >
-                Find clarity and connection in a safe space.
+                {heading}
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -53,7 +64,7 @@ export function Hero() {
                 transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
                 className="text-[var(--color-text-primary)] text-lg md:text-xl max-w-[650px] leading-relaxed font-light mt-2"
               >
-                Modern couples therapy, individual healing, and premarital counselling in Surrey. We're here to support your journey.
+                {description}
               </motion.p>
             </div>
           </div>

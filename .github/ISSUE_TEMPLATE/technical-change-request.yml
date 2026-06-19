@@ -1,0 +1,63 @@
+name: Technical Change Request
+description: Request backend, layout, integration, or deployment-level changes.
+title: "[TECH] "
+labels:
+  - technical-request
+body:
+  - type: textarea
+    id: business_goal
+    attributes:
+      label: Business goal
+      description: What outcome are we trying to achieve?
+      placeholder: Explain the goal in non-technical language.
+    validations:
+      required: true
+
+  - type: textarea
+    id: requested_change
+    attributes:
+      label: Requested technical change
+      description: What needs to be changed technically?
+      placeholder: APIs, forms, integrations, layout behavior, analytics, deployment, etc.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - label: Frontend layout/components
+        - label: Backend/integrations
+        - label: Forms/booking flow
+        - label: SEO/metadata
+        - label: Deployment/Vercel configuration
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: How will we know this is done correctly?
+      placeholder: List clear pass/fail criteria.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      options:
+        - Low
+        - Medium
+        - High
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Links and references
+      description: Optional supporting links, screenshots, pages, tickets, or docs.
+      placeholder: Add any useful context.
+    validations:
+      required: false

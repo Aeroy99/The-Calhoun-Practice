@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Content-only update
+    url: https://www.thecalhounpractice.com
+    about: Use Storyblok editor for text/image-only updates. Use technical issue template for layout, backend, or deployment changes.
