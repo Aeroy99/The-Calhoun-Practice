@@ -6,6 +6,8 @@
   "packageManager": "yarn@1.22.22",
   "scripts": {
     "dev": "vite",
+    "cms:proxy": "npx --yes decap-server@latest",
+    "dev:cms": "vite --host 0.0.0.0 --port 5173",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

@@ -13,7 +13,7 @@ yarn dev --host 0.0.0.0 --port 5173
 
 Open [http://localhost:5173](http://localhost:5173).
 
-## Storyblok content editing workflow
+## Decap content editing workflow
 
 This project supports CMS-driven homepage copy for partner-friendly editing:
 
@@ -22,34 +22,24 @@ This project supports CMS-driven homepage copy for partner-friendly editing:
 - CTA heading/badge
 - Testimonial quote/author
 
-If Storyblok env vars are missing, the app automatically falls back to built-in defaults.
-
-### Environment variables
-
-Copy `.env.example` to `.env.local` and set:
-
-- `VITE_STORYBLOK_PREVIEW_TOKEN`
-- `VITE_STORYBLOK_ACCESS_TOKEN`
-- `VITE_STORYBLOK_HOME_SLUG` (default: `home`)
-
-### Preview mode
-
-Use preview URL while editing drafts:
+Editor route:
 
 ```text
-http://localhost:5173/?preview=1
+http://localhost:5173/admin
 ```
 
 ## Governance model
 
-- Content edits: partner can edit/publish in Storyblok.
+- Content edits: partner can edit/publish in Decap.
 - Technical changes: raised as GitHub issues, implemented via PR by owner.
-- Rollback options: Storyblok version restore + Vercel deployment rollback + Git revert.
+- Rollback options: Git content revert + Vercel deployment rollback + Git code revert.
 
 See:
 
 - `docs/publish-safely-checklist.md`
-- `docs/storyblok-setup.md`
-- `docs/storyblok-editor-workflow.md`
+- `docs/decap-setup.md`
+- `docs/decap-editor-workflow.md`
+- `docs/cms-decision-preview-pack.md`
+- `docs/sanity-free-option.md`
 - `docs/github-vercel-approval-flow.md`
 - `.github/ISSUE_TEMPLATE/technical-change-request.yml`

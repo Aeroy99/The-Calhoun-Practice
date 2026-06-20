@@ -1,0 +1,53 @@
+backend:
+  name: github
+  repo: Aeroy99/The-Calhoun-Practice
+  branch: main
+
+local_backend: true
+publish_mode: editorial_workflow
+
+media_folder: public/uploads
+public_folder: /uploads
+
+site_url: https://www.thecalhounpractice.com
+display_url: https://www.thecalhounpractice.com
+
+collections:
+  - name: site_content
+    label: Site Content
+    files:
+      - file: public/content/home-content.json
+        name: home_content
+        label: Home Page Content
+        format: json
+        editor:
+          preview: false
+        fields:
+          - label: Hero
+            name: hero
+            widget: object
+            fields:
+              - { label: Badge Left, name: badgeLeft, widget: string }
+              - { label: Badge Right, name: badgeRight, widget: string }
+              - { label: Heading, name: heading, widget: string }
+              - { label: Description, name: description, widget: text }
+          - label: Introduction
+            name: introduction
+            widget: object
+            fields:
+              - { label: Heading, name: heading, widget: string }
+              - { label: Description, name: description, widget: text }
+              - { label: Button Text, name: buttonText, widget: string }
+              - { label: Button Link, name: buttonLink, widget: string, hint: "Use routes like /contact or /#therapists" }
+          - label: CTA
+            name: cta
+            widget: object
+            fields:
+              - { label: Badge, name: badge, widget: string }
+              - { label: Heading, name: heading, widget: string }
+          - label: Testimonial
+            name: testimonial
+            widget: object
+            fields:
+              - { label: Quote, name: quote, widget: text }
+              - { label: Author, name: author, widget: string }

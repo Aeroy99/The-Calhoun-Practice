@@ -1,0 +1,22 @@
+{
+  "hero": {
+    "badgeLeft": "Confidential Care",
+    "badgeRight": "Licensed Professionals",
+    "heading": "Find clarity and connection in a safe space.",
+    "description": "Modern couples therapy, individual healing, and premarital counselling in Surrey. We're here to support your journey."
+  },
+  "introduction": {
+    "heading": "We're here to help your relationships thrive",
+    "description": "We provide an empathetic, supportive space for you to explore your feelings and work towards a healthier, happier life. Our experienced therapists are dedicated to guiding you through your journey of growth and healing.",
+    "buttonText": "Meet Founder therapist for Calhoun Practice",
+    "buttonLink": "/#therapists"
+  },
+  "cta": {
+    "badge": "Safe Space",
+    "heading": "Ready to get started? Let's connect today."
+  },
+  "testimonial": {
+    "quote": "\"I feel so much more confident and grounded after working with the team. The personalized approach really made a difference in my daily life.\"",
+    "author": "Client"
+  }
+}

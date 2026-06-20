@@ -12,10 +12,10 @@ Use this checklist before pushing new changes to production.
 
 ## 2) Content workflow readiness (partner-friendly)
 
-- [ ] Storyblok content is edited in Draft first.
+- [ ] CMS content is edited in Draft first.
 - [ ] Preview matches expectations before Publish.
-- [ ] If unsure, compare against previous Storyblok version.
-- [ ] Publish only content changes from Storyblok editor.
+- [ ] If unsure, compare against previous Git/CMS version.
+- [ ] Publish only content changes from the editor (no technical changes).
 
 ## 3) Technical change flow (Option B)
 
@@ -27,7 +27,7 @@ Use this checklist before pushing new changes to production.
 
 ## 4) Rollback safety
 
-- [ ] Storyblok version restore path confirmed (content rollback).
+- [ ] Content version restore path confirmed (content rollback).
 - [ ] Vercel deployment history available (deployment rollback).
 - [ ] Git revert path documented for code rollback.
 

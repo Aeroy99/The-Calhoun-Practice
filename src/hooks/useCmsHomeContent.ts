@@ -1,81 +1,32 @@
-import { useEffect, useMemo, useState } from "react";
-import { DEFAULT_HOME_CONTENT, mapStoryblokHomeContent } from "@/lib/cms/homeContent";
-import {
-  createStoryblokBridge,
-  fetchHomeContentFromStoryblok,
-  isStoryblokConfigured,
-} from "@/lib/cms/storyblok";
-
-function isPreviewSession(): boolean {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  const params = new URLSearchParams(window.location.search);
-  return params.has("_storyblok") || params.get("preview") === "1";
-}
+import { useEffect, useState } from "react";
+import { DEFAULT_HOME_CONTENT, mapHomeContent } from "@/lib/cms/homeContent";
 
 export function useCmsHomeContent() {
   const [content, setContent] = useState(DEFAULT_HOME_CONTENT);
-  const [source, setSource] = useState<"defaults" | "storyblok">("defaults");
-
-  const previewMode = useMemo(() => isPreviewSession(), []);
+  const [source, setSource] = useState<"defaults" | "decap">("defaults");
 
   useEffect(() => {
-    if (!isStoryblokConfigured()) {
-      setContent(DEFAULT_HOME_CONTENT);
-      setSource("defaults");
-      return;
-    }
-
     let isCancelled = false;
-    let currentStoryId: number | undefined;
 
     const load = async () => {
       try {
-        const data = await fetchHomeContentFromStoryblok(
-          previewMode ? "draft" : "published",
-        );
-
-        if (!data || isCancelled) {
-          return;
-        }
-
-        currentStoryId = data.storyId;
-        setContent(data.content);
-        setSource("storyblok");
-
-        if (!previewMode) {
-          return;
-        }
-
-        const bridge = await createStoryblokBridge();
-        if (!bridge || isCancelled) {
-          return;
-        }
-
-        bridge.on("input", (event) => {
-          if (isCancelled) {
-            return;
-          }
-
-          if (currentStoryId && event.story?.id && event.story.id !== currentStoryId) {
-            return;
-          }
-
-          if (event.story?.content) {
-            setContent(mapStoryblokHomeContent(event.story.content));
-            setSource("storyblok");
-          }
+        const response = await fetch("/content/home-content.json", {
+          cache: "no-store",
         });
 
-        bridge.on(["change", "published"], () => {
-          if (!isCancelled) {
-            window.location.reload();
-          }
-        });
+        if (!response.ok) {
+          throw new Error(`Failed to load Decap content file: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (isCancelled) {
+          return;
+        }
+
+        setContent(mapHomeContent(data));
+        setSource("decap");
       } catch (error) {
-        console.error("Failed to load Storyblok content, using defaults.", error);
+        console.error("Failed to load Decap content, using defaults.", error);
         if (!isCancelled) {
           setContent(DEFAULT_HOME_CONTENT);
           setSource("defaults");
@@ -88,11 +39,11 @@ export function useCmsHomeContent() {
     return () => {
       isCancelled = true;
     };
-  }, [previewMode]);
+  }, []);
 
   return {
     content,
     source,
-    previewMode,
+    previewMode: false,
   };
 }

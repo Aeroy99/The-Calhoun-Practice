@@ -56,10 +56,7 @@ function asRecord(value: unknown): UnknownRecord {
   return {};
 }
 
-function getString(
-  value: unknown,
-  fallback: string,
-): string {
+function getString(value: unknown, fallback: string): string {
   return typeof value === "string" && value.trim() ? value.trim() : fallback;
 }
 
@@ -82,7 +79,7 @@ function getLink(value: unknown, fallback: string): string {
   return fallback;
 }
 
-export function mapStoryblokHomeContent(raw: unknown): HomeContent {
+export function mapHomeContent(raw: unknown): HomeContent {
   const content = asRecord(raw);
   const hero = asRecord(content.hero);
   const introduction = asRecord(content.introduction);
@@ -92,11 +89,11 @@ export function mapStoryblokHomeContent(raw: unknown): HomeContent {
   return {
     hero: {
       badgeLeft: getString(
-        hero.badge_left ?? content.hero_badge_left,
+        hero.badgeLeft ?? hero.badge_left ?? content.hero_badge_left,
         DEFAULT_HOME_CONTENT.hero.badgeLeft,
       ),
       badgeRight: getString(
-        hero.badge_right ?? content.hero_badge_right,
+        hero.badgeRight ?? hero.badge_right ?? content.hero_badge_right,
         DEFAULT_HOME_CONTENT.hero.badgeRight,
       ),
       heading: getString(
@@ -118,11 +115,11 @@ export function mapStoryblokHomeContent(raw: unknown): HomeContent {
         DEFAULT_HOME_CONTENT.introduction.description,
       ),
       buttonText: getString(
-        introduction.button_text ?? content.intro_button_text,
+        introduction.buttonText ?? introduction.button_text ?? content.intro_button_text,
         DEFAULT_HOME_CONTENT.introduction.buttonText,
       ),
       buttonLink: getLink(
-        introduction.button_link ?? content.intro_button_link,
+        introduction.buttonLink ?? introduction.button_link ?? content.intro_button_link,
         DEFAULT_HOME_CONTENT.introduction.buttonLink,
       ),
     },
@@ -148,3 +145,4 @@ export function mapStoryblokHomeContent(raw: unknown): HomeContent {
     },
   };
 }
+
