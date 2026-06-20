@@ -15,9 +15,12 @@ import { SvgDefinitions } from "@/components/sections/SvgDefinitions";
 import { NewsletterPopup } from "@/components/sections/NewsletterPopup";
 import { BodyClosing } from "@/components/sections/BodyClosing";
 import { useCmsHomeContent } from "@/hooks/useCmsHomeContent";
+import { useLocation } from "react-router-dom";
+import { CmsModeSwitcher } from "@/components/CmsModeSwitcher";
 
 const HomePage = () => {
-  const { content } = useCmsHomeContent();
+  const location = useLocation();
+  const { content, cmsMode } = useCmsHomeContent(location.search);
 
   return (
     <SiteWrapper>
@@ -52,6 +55,7 @@ const HomePage = () => {
       <NewsletterPopup />
       <SvgDefinitions />
       <BodyClosing />
+      <CmsModeSwitcher mode={cmsMode} />
     </SiteWrapper>
   );
 };

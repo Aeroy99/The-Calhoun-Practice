@@ -5,6 +5,7 @@ import FeesFAQPage from "./pages/FeesFAQPage";
 import { ContactPage } from "./pages/ContactPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ScrollToHash } from "./components/ScrollToHash";
+import CmsComparePage from "./pages/CmsComparePage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/fees-and-faq" element={<FeesFAQPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/cms-compare" element={<CmsComparePage />} />
         </Routes>
       </div>
     </BrowserRouter>

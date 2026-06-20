@@ -28,6 +28,12 @@ Editor route:
 http://localhost:5173/admin
 ```
 
+Comparison route:
+
+```text
+http://localhost:5173/cms-compare
+```
+
 ## Governance model
 
 - Content edits: partner can edit/publish in Decap.

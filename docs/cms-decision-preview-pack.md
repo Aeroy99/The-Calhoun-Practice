@@ -13,6 +13,7 @@ Preview links:
 
 - Website: `http://localhost:5173`
 - Editor: `http://localhost:5173/admin`
+- Comparison playground: `http://localhost:5173/cms-compare`
 
 ## Option B: Sanity Free (alternative)
 
@@ -32,3 +33,9 @@ What to compare in 10 minutes:
 
 If strict free-only + minimal platform complexity is priority, keep **Decap**.
 If better editor UX is priority and you accept a managed service dependency, evaluate **Sanity Free**.
+
+## How to run the comparison locally
+
+1. Start website: `yarn dev:cms`
+2. (Optional for local editor saves) start proxy: `npx --yes decap-server@latest`
+3. Open `http://localhost:5173/cms-compare`

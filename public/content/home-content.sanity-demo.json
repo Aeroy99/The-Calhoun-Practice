@@ -1,0 +1,22 @@
+{
+  "hero": {
+    "badgeLeft": "Relational Insight",
+    "badgeRight": "Structured Support",
+    "heading": "Build stronger connection with practical emotional tools.",
+    "description": "A Sanity-style content scenario: clearer editorial language, structured sections, and guided clarity for couples and individuals."
+  },
+  "introduction": {
+    "heading": "A calmer path forward, one conversation at a time",
+    "description": "This alternative content profile simulates how your website might feel with a differently structured CMS workflow. It keeps layout identical while changing copy tone and emphasis.",
+    "buttonText": "Explore therapist profiles",
+    "buttonLink": "/#therapists"
+  },
+  "cta": {
+    "badge": "Guided Progress",
+    "heading": "Start with a conversation and build confidence together."
+  },
+  "testimonial": {
+    "quote": "\"The sessions helped us communicate without spiralling. We left each week with practical steps and more hope.\"",
+    "author": "Couples Client"
+  }
+}
