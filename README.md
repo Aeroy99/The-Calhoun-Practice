@@ -51,4 +51,5 @@ See:
 - `docs/publish-safely-checklist.md`
 - `docs/storyblok-setup.md`
 - `docs/storyblok-editor-workflow.md`
+- `docs/github-vercel-approval-flow.md`
 - `.github/ISSUE_TEMPLATE/technical-change-request.yml`
