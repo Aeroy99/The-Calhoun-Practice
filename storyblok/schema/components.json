@@ -1,0 +1,70 @@
+[
+  {
+    "name": "home_page",
+    "display_name": "Home Page",
+    "is_root": true,
+    "is_nestable": false,
+    "schema": {
+      "hero_badge_left": {
+        "type": "text",
+        "pos": 0,
+        "display_name": "Hero Badge Left"
+      },
+      "hero_badge_right": {
+        "type": "text",
+        "pos": 1,
+        "display_name": "Hero Badge Right"
+      },
+      "hero_heading": {
+        "type": "text",
+        "pos": 2,
+        "display_name": "Hero Heading"
+      },
+      "hero_description": {
+        "type": "textarea",
+        "pos": 3,
+        "display_name": "Hero Description"
+      },
+      "intro_heading": {
+        "type": "text",
+        "pos": 4,
+        "display_name": "Introduction Heading"
+      },
+      "intro_description": {
+        "type": "textarea",
+        "pos": 5,
+        "display_name": "Introduction Description"
+      },
+      "intro_button_text": {
+        "type": "text",
+        "pos": 6,
+        "display_name": "Introduction Button Text"
+      },
+      "intro_button_link": {
+        "type": "multilink",
+        "pos": 7,
+        "display_name": "Introduction Button Link"
+      },
+      "cta_badge": {
+        "type": "text",
+        "pos": 8,
+        "display_name": "CTA Badge"
+      },
+      "cta_heading": {
+        "type": "text",
+        "pos": 9,
+        "display_name": "CTA Heading"
+      },
+      "testimonial_quote": {
+        "type": "textarea",
+        "pos": 10,
+        "display_name": "Testimonial Quote"
+      },
+      "testimonial_author": {
+        "type": "text",
+        "pos": 11,
+        "display_name": "Testimonial Author"
+      }
+    }
+  }
+]
