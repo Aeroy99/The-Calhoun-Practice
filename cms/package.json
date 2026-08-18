@@ -1,0 +1,45 @@
+{
+  "name": "calhoun-payload-cms",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Owned Payload CMS demo for The Calhoun Practice",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --port 3000",
+    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start --port 3000",
+    "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed.ts",
+    "backup": "cross-env NODE_OPTIONS=--no-deprecation tsx ops/backup.ts",
+    "restore": "cross-env NODE_OPTIONS=--no-deprecation tsx ops/restore.ts",
+    "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
+    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "3.88.0",
+    "@payloadcms/db-sqlite": "3.88.0",
+    "@payloadcms/db-vercel-postgres": "3.88.0",
+    "@payloadcms/next": "3.88.0",
+    "@payloadcms/richtext-lexical": "3.88.0",
+    "@payloadcms/ui": "3.88.0",
+    "cross-env": "10.1.0",
+    "dotenv": "16.4.7",
+    "graphql": "^16.8.1",
+    "next": "16.3.1",
+    "payload": "3.88.0",
+    "react": "19.2.1",
+    "react-dom": "19.2.1",
+    "sharp": "0.34.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "tsx": "4.20.3",
+    "typescript": "5.8.3"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  }
+}

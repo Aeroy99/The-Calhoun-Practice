@@ -30,7 +30,9 @@ function normalizePostgresUrl(url: string): string {
   return normalized;
 }
 
-const databaseUrl = normalizePostgresUrl(rawDatabaseUrl);
+const databaseUrl = isSqliteUrl(rawDatabaseUrl)
+  ? rawDatabaseUrl
+  : normalizePostgresUrl(rawDatabaseUrl);
 
 function isSqliteUrl(url: string): boolean {
   return url.startsWith("file:") || url.endsWith(".db") || url.includes(".db?");
@@ -78,7 +80,8 @@ const corsOrigins = (
   .filter(Boolean);
 
 const previewUrl =
-  process.env.PREVIEW_URL?.replace(/\/$/, "") || "http://localhost:5173";
+  process.env.PREVIEW_URL?.replace(/\/$/, "") ||
+  (isProduction ? "https://www.thecalhounpractice.com" : "http://localhost:5173");
 
 const payloadSecret = process.env.PAYLOAD_SECRET || "";
 if (isProduction && payloadSecret.length < 16) {

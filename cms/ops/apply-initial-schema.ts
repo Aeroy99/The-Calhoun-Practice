@@ -1,9 +1,14 @@
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import pg from "pg";
 import { up } from "../src/migrations/20260817_231130_initial.ts";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const cmsRoot = path.resolve(__dirname, "..");
+
 function getConnectionString() {
-  const env = fs.readFileSync(".env.production.local", "utf8");
+  const env = fs.readFileSync(path.join(cmsRoot, ".env.production.local"), "utf8");
   const unpooled = env.match(/^DATABASE_URL_UNPOOLED="(.+)"$/m)?.[1];
   if (!unpooled) {
     throw new Error("DATABASE_URL_UNPOOLED not found");
@@ -31,12 +36,21 @@ const db = {
 
 try {
   await client.connect();
+  const requiredTables = ["users", "media", "home_page", "payload_migrations"];
   const existing = await client.query(
-    "SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'users'",
+    "SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename = ANY($1)",
+    [requiredTables],
   );
-  if (existing.rowCount > 0) {
+  if (existing.rowCount === requiredTables.length) {
     console.log("Schema already present; skipping.");
     process.exit(0);
+  }
+  if (existing.rowCount > 0) {
+    const found = existing.rows.map((r) => r.tablename);
+    const missing = requiredTables.filter((t) => !found.includes(t));
+    console.warn(
+      `Partial schema detected (missing: ${missing.join(", ")}). Re-applying migration...`,
+    );
   }
 
   console.log("Applying initial migration...");

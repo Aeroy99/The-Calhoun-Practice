@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-type CmsMode = "decap" | "sanity-demo";
+type CmsMode = "decap" | "sanity-demo" | "payload";
 
 export default function CmsComparePage() {
-  const [mode, setMode] = useState<CmsMode>("decap");
+  const [mode, setMode] = useState<CmsMode>("payload");
 
   const previewSrc = useMemo(() => `/?cms=${mode}`, [mode]);
 
@@ -16,14 +16,25 @@ export default function CmsComparePage() {
             CMS Decision Preview
           </p>
           <h1 className="mt-2 text-2xl font-serif text-[var(--color-text-primary)] md:text-3xl">
-            Compare Decap vs Sanity-style content view
+            Compare content sources for the homepage
           </h1>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[hsl(var(--warm-gray))] md:text-base">
-            This page lets you switch the website between two CMS data sources so your wife can
-            compare outcomes quickly. Decap editor is fully live at <code>/admin</code>. Sanity
-            mode is a side-by-side demo dataset, not a connected Sanity Studio yet.
+            Payload is the owned open-source path (editor at{" "}
+            <code>http://localhost:3000/admin</code>). Decap remains a Git-backed
+            fallback. Sanity Demo is a static sample dataset only.
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setMode("payload")}
+              className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                mode === "payload"
+                  ? "bg-[hsl(var(--terracotta-main))] text-white"
+                  : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+              }`}
+            >
+              Payload mode
+            </button>
             <button
               type="button"
               onClick={() => setMode("decap")}
@@ -33,7 +44,7 @@ export default function CmsComparePage() {
                   : "bg-gray-100 text-gray-800 hover:bg-gray-200"
               }`}
             >
-              Website in Decap Mode
+              Decap mode
             </button>
             <button
               type="button"
@@ -44,19 +55,21 @@ export default function CmsComparePage() {
                   : "bg-gray-100 text-gray-800 hover:bg-gray-200"
               }`}
             >
-              Website in Sanity Demo Mode
+              Sanity demo mode
             </button>
             <a
-              href="/admin"
+              href="http://localhost:3000/admin"
               className="rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-900 ring-1 ring-black/10 hover:bg-gray-50"
+              target="_blank"
+              rel="noreferrer"
             >
-              Open Decap Editor
+              Open Payload editor
             </a>
             <Link
               to={previewSrc}
               className="rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-900 ring-1 ring-black/10 hover:bg-gray-50"
             >
-              Open Full Preview
+              Open full preview
             </Link>
           </div>
         </header>
@@ -71,12 +84,15 @@ export default function CmsComparePage() {
 
         <section className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
-            Recommended decision path
+            What you are looking at
           </h2>
           <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-[hsl(var(--warm-gray))]">
-            <li>Use this page with your wife and collect preference feedback.</li>
-            <li>If Decap feels simple enough, keep it for zero-cost operations.</li>
-            <li>If editor UX is the blocker, we can migrate to real Sanity in a separate PR.</li>
+            <li>
+              Payload: live content from your local SQLite database via the CMS
+              API.
+            </li>
+            <li>Decap: JSON file in the repo (`public/content/home-content.json`).</li>
+            <li>Sanity demo: alternate JSON file only (no real Sanity Studio).</li>
           </ul>
         </section>
       </div>

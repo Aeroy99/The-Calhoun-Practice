@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type CmsMode = "decap" | "sanity-demo";
+type CmsMode = "decap" | "sanity-demo" | "payload";
 
 interface CmsModeSwitcherProps {
   mode: CmsMode;
@@ -12,7 +12,7 @@ export function CmsModeSwitcher({ mode }: CmsModeSwitcherProps) {
       <p className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-wide text-[hsl(var(--warm-gray))]">
         CMS Preview Mode
       </p>
-      <div className="flex items-center gap-1">
+      <div className="flex flex-wrap items-center gap-1">
         <a
           href="/?cms=decap"
           className={cn(
@@ -23,6 +23,17 @@ export function CmsModeSwitcher({ mode }: CmsModeSwitcherProps) {
           )}
         >
           Decap
+        </a>
+        <a
+          href="/?cms=payload"
+          className={cn(
+            "rounded-md px-2 py-1 text-xs font-medium transition-colors",
+            mode === "payload"
+              ? "bg-[hsl(var(--terracotta-main))] text-white"
+              : "bg-gray-100 text-gray-700 hover:bg-gray-200",
+          )}
+        >
+          Payload
         </a>
         <a
           href="/?cms=sanity-demo"

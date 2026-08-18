@@ -15,12 +15,18 @@ Preview links:
 - Editor: `http://localhost:5173/admin`
 - Comparison playground: `http://localhost:5173/cms-compare`
 
-## Option B: Sanity Free (alternative)
+## Option B: Payload CMS (owned demo — preferred path)
 
-- Cost: Free tier advertised as `$0 forever` (with plan limits)
-- Editing UI: modern studio, generally easier for content teams
-- Versioning: document history + dataset workflow
-- Best for: smoother editor UX with structured content
+- Cost: Free / open source (you host it)
+- Editing UI: form admin at `http://localhost:3000/admin` (no GitHub for her)
+- Storage: local SQLite demo DB you own (`cms/payload-demo.db`)
+- Docs: `docs/payload-cms-demo.md`
+
+## Option C: Sanity Free (managed alternative)
+
+- Cost: Free tier advertised as `$0` (with plan limits)
+- Editing UI: modern studio
+- Tradeoff: content lives in Sanity cloud, not fully owned end-to-end
 
 What to compare in 10 minutes:
 
@@ -31,11 +37,13 @@ What to compare in 10 minutes:
 
 ## Recommendation for your constraints
 
-If strict free-only + minimal platform complexity is priority, keep **Decap**.
-If better editor UX is priority and you accept a managed service dependency, evaluate **Sanity Free**.
+Prefer **Payload** for owned stack + wife-friendly browser editing.
+Keep Decap only as a temporary comparison baseline.
+Use Sanity only if you later prefer managed SaaS over self-hosting.
 
 ## How to run the comparison locally
 
-1. Start website: `yarn dev:cms`
-2. (Optional for local editor saves) start proxy: `npx --yes decap-server@latest`
+1. Start Payload: `yarn cms:dev` then `yarn cms:seed` (once)
+2. Start website: `yarn dev:cms`
 3. Open `http://localhost:5173/cms-compare`
+4. Payload editor: `http://localhost:3000/admin`

@@ -20,10 +20,15 @@ import { CmsModeSwitcher } from "@/components/CmsModeSwitcher";
 
 const HomePage = () => {
   const location = useLocation();
-  const { content, cmsMode } = useCmsHomeContent(location.search);
+  const { content, cmsMode, previewMode } = useCmsHomeContent(location.search);
 
   return (
     <SiteWrapper>
+      {previewMode ? (
+        <div className="sticky top-0 z-[80] bg-[hsl(var(--terracotta-main))] px-4 py-2 text-center text-sm font-medium text-white">
+          Live preview — changes appear here before you Save in the editor
+        </div>
+      ) : null}
       <Header />
       <MainContentWrapper>
         <Hero
@@ -55,7 +60,7 @@ const HomePage = () => {
       <NewsletterPopup />
       <SvgDefinitions />
       <BodyClosing />
-      <CmsModeSwitcher mode={cmsMode} />
+      {!previewMode ? <CmsModeSwitcher mode={cmsMode} /> : null}
     </SiteWrapper>
   );
 };
