@@ -27,5 +27,7 @@
       "@/*": ["./src/*"]
     },
     "outDir": "dist"
-  }
+  },
+  "include": ["src", "vite.config.ts"],
+  "exclude": ["cms", "node_modules", "dist"]
 }
