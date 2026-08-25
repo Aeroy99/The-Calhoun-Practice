@@ -120,8 +120,8 @@ if (isProduction && payloadSecret.length < 16) {
 
 const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 if (isProduction && isVercel && !blobToken) {
-  throw new Error(
-    "BLOB_READ_WRITE_TOKEN is required on Vercel so media uploads are stored in Blob, not ephemeral disk.",
+  console.warn(
+    "BLOB_READ_WRITE_TOKEN is not set. Media uploads on Vercel will fail until a Blob store is attached to the CMS project.",
   );
 }
 
