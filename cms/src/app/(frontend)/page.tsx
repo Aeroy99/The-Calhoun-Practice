@@ -3,16 +3,16 @@ import React from "react";
 
 import "./styles.css";
 
-export default function CmsDemoHomePage() {
+export default function CmsHomePage() {
   return (
     <main className="home">
       <div className="content">
-        <p className="eyebrow">The Calhoun Practice · Payload demo</p>
-        <h1>Website content editor (owned by you)</h1>
+        <p className="eyebrow">The Calhoun Practice · CMS</p>
+        <h1>Website content editor</h1>
         <p>
-          This Next.js app is the CMS backend. Your public Vite website at{" "}
-          <code>localhost:5173</code> reads homepage text from here when you open{" "}
-          <code>?cms=payload</code>.
+          This app is the Payload CMS. Editors sign in at <code>/admin</code>.
+          The public site reads homepage copy from{" "}
+          <code>/api/globals/home-page</code>.
         </p>
         <div className="links">
           <Link className="admin" href="/admin">
@@ -20,18 +20,18 @@ export default function CmsDemoHomePage() {
           </Link>
           <a
             className="docs"
-            href="http://localhost:5173/?cms=payload"
+            href="https://www.thecalhounpractice.com"
             rel="noreferrer"
           >
-            Open website in Payload mode
+            Open public website
           </a>
         </div>
         <ol>
-          <li>Create your admin login on first visit to /admin.</li>
+          <li>Sign in with the admin created by <code>yarn seed</code> (from PAYLOAD_ADMIN_EMAIL).</li>
           <li>
-            Run <code>yarn seed</code> once to load current homepage copy.
+            Complete Authenticator app setup, then register a passkey on your account.
           </li>
-          <li>Edit <strong>Homepage content</strong>, save, refresh the Vite site.</li>
+          <li>Edit <strong>Homepage content</strong>, save, then refresh the public site.</li>
         </ol>
       </div>
     </main>

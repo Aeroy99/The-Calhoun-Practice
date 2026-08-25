@@ -69,6 +69,10 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    services: Service;
+    'planner-notes': PlannerNote;
+    passkeys: Passkey;
+    'auth-challenges': AuthChallenge;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +82,10 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
+    'planner-notes': PlannerNotesSelect<false> | PlannerNotesSelect<true>;
+    passkeys: PasskeysSelect<false> | PasskeysSelect<true>;
+    'auth-challenges': AuthChallengesSelect<false> | AuthChallengesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -88,10 +96,22 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
+    'site-settings': SiteSetting;
     'home-page': HomePage;
+    'about-page': AboutPage;
+    'therapy-page': TherapyPage;
+    'contact-page': ContactPage;
+    'fees-page': FeesPage;
+    'privacy-page': PrivacyPage;
   };
   globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'therapy-page': TherapyPageSelect<false> | TherapyPageSelect<true>;
+    'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
+    'fees-page': FeesPageSelect<false> | FeesPageSelect<true>;
+    'privacy-page': PrivacyPageSelect<false> | PrivacyPageSelect<true>;
   };
   locale: null;
   widgets: {
@@ -131,6 +151,12 @@ export interface User {
    * Friendly name shown in the admin (optional).
    */
   name?: string | null;
+  /**
+   * Admins can manage users and media. Editors can edit homepage content only.
+   */
+  role: 'admin' | 'editor';
+  totpSecret?: string | null;
+  hasTotp?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -151,6 +177,8 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Upload photos used on the website. Add a short alt description for accessibility.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
@@ -168,6 +196,87 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * These cards appear on the homepage and can be shown on Therapy pages. Add, reorder, or hide a service here.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: number;
+  title: string;
+  /**
+   * Smaller numbers appear first.
+   */
+  order?: number | null;
+  audience: 'adult' | 'youth' | 'both';
+  summary: string;
+  details: string;
+  image?: (number | null) | Media;
+  buttonLabel?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Leave a note for Aaron about a new page, social account, photo, or feature. He will review it and then build it.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "planner-notes".
+ */
+export interface PlannerNote {
+  id: number;
+  title: string;
+  kind: 'page' | 'social' | 'media' | 'feature' | 'other';
+  /**
+   * Write it as you would in a planner: what should visitors see, any wording, and when you want it.
+   */
+  details: string;
+  status: 'new' | 'reviewing' | 'building' | 'done';
+  attachment?: (number | null) | Media;
+  /**
+   * Only Aaron fills this in after he has reviewed the note.
+   */
+  engineerReply?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "passkeys".
+ */
+export interface Passkey {
+  id: number;
+  user: number | User;
+  label?: string | null;
+  credentialId: string;
+  publicKey: string;
+  counter: number;
+  deviceType?: string | null;
+  backedUp?: boolean | null;
+  transports?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "auth-challenges".
+ */
+export interface AuthChallenge {
+  id: number;
+  challengeKey: string;
+  challenge: string;
+  expiresAt: string;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -200,6 +309,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'services';
+        value: number | Service;
+      } | null)
+    | ({
+        relationTo: 'planner-notes';
+        value: number | PlannerNote;
+      } | null)
+    | ({
+        relationTo: 'passkeys';
+        value: number | Passkey;
+      } | null)
+    | ({
+        relationTo: 'auth-challenges';
+        value: number | AuthChallenge;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -249,6 +374,9 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  role?: T;
+  totpSecret?: T;
+  hasTotp?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -283,6 +411,62 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  title?: T;
+  order?: T;
+  audience?: T;
+  summary?: T;
+  details?: T;
+  image?: T;
+  buttonLabel?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "planner-notes_select".
+ */
+export interface PlannerNotesSelect<T extends boolean = true> {
+  title?: T;
+  kind?: T;
+  details?: T;
+  status?: T;
+  attachment?: T;
+  engineerReply?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "passkeys_select".
+ */
+export interface PasskeysSelect<T extends boolean = true> {
+  user?: T;
+  label?: T;
+  credentialId?: T;
+  publicKey?: T;
+  counter?: T;
+  deviceType?: T;
+  backedUp?: T;
+  transports?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "auth-challenges_select".
+ */
+export interface AuthChallengesSelect<T extends boolean = true> {
+  challengeKey?: T;
+  challenge?: T;
+  expiresAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -325,6 +509,59 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Main navigation, footer links, social accounts, and the newsletter popup. This is the website chrome your visitors see on every page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  navItems?:
+    | {
+        label: string;
+        /**
+         * Example: /about or /#services
+         */
+        href: string;
+        isButton?: boolean | null;
+        children?:
+          | {
+              label: string;
+              href: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  footerLinks?:
+    | {
+        label: string;
+        href: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add Instagram, Facebook, TikTok, or others when you are ready. Leave empty to hide an icon.
+   */
+  socialLinks?:
+    | {
+        network: 'instagram' | 'facebook' | 'tiktok';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  copyrightName?: string | null;
+  newsletter?: {
+    enabled?: boolean | null;
+    heading?: string | null;
+    description?: string | null;
+    buttonLabel?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Edit homepage text. Click Live Preview to see changes on the real site before you Save.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -355,8 +592,172 @@ export interface HomePage {
     quote: string;
     author: string;
   };
+  servicesHeading?: string | null;
+  servicesButtonLabel?: string | null;
+  therapistHeading?: string | null;
+  practiceManager: {
+    heading: string;
+    badge: string;
+    description: string;
+    buttonLabel: string;
+  };
+  location: {
+    heading: string;
+    buttonLabel: string;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * The About Me page. Add your photo, role, and story here.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page".
+ */
+export interface AboutPage {
+  id: number;
+  heading: string;
+  name: string;
+  role: string;
+  photo?: (number | null) | Media;
+  intro: string;
+  story: string;
+  buttonLabel?: string | null;
+  buttonLink?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The Therapy section of the site: overview, Adult, and Kids / Young Adult.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "therapy-page".
+ */
+export interface TherapyPage {
+  id: number;
+  overview: {
+    heading: string;
+    intro: string;
+    adultCardTitle?: string | null;
+    adultCardText: string;
+    youthCardTitle?: string | null;
+    youthCardText: string;
+  };
+  adult: {
+    heading: string;
+    intro: string;
+    body: string;
+    photo?: (number | null) | Media;
+  };
+  youth: {
+    heading: string;
+    intro: string;
+    body: string;
+    photo?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The heading and intro above the consultation form.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page".
+ */
+export interface ContactPage {
+  id: number;
+  heading: string;
+  intro: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Add or rewrite fee and FAQ sections whenever they change.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fees-page".
+ */
+export interface FeesPage {
+  id: number;
+  heading: string;
+  sections?:
+    | {
+        heading: string;
+        body: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Privacy policy wording. Have a solicitor review before you publish changes.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "privacy-page".
+ */
+export interface PrivacyPage {
+  id: number;
+  heading: string;
+  lastUpdated?: string | null;
+  intro: string;
+  sections?:
+    | {
+        heading: string;
+        body: string;
+        id?: string | null;
+      }[]
+    | null;
+  footerNote?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  navItems?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        isButton?: T;
+        children?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  footerLinks?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        id?: T;
+      };
+  socialLinks?:
+    | T
+    | {
+        network?: T;
+        url?: T;
+        id?: T;
+      };
+  copyrightName?: T;
+  newsletter?:
+    | T
+    | {
+        enabled?: T;
+        heading?: T;
+        description?: T;
+        buttonLabel?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -391,6 +792,123 @@ export interface HomePageSelect<T extends boolean = true> {
         quote?: T;
         author?: T;
       };
+  servicesHeading?: T;
+  servicesButtonLabel?: T;
+  therapistHeading?: T;
+  practiceManager?:
+    | T
+    | {
+        heading?: T;
+        badge?: T;
+        description?: T;
+        buttonLabel?: T;
+      };
+  location?:
+    | T
+    | {
+        heading?: T;
+        buttonLabel?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page_select".
+ */
+export interface AboutPageSelect<T extends boolean = true> {
+  heading?: T;
+  name?: T;
+  role?: T;
+  photo?: T;
+  intro?: T;
+  story?: T;
+  buttonLabel?: T;
+  buttonLink?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "therapy-page_select".
+ */
+export interface TherapyPageSelect<T extends boolean = true> {
+  overview?:
+    | T
+    | {
+        heading?: T;
+        intro?: T;
+        adultCardTitle?: T;
+        adultCardText?: T;
+        youthCardTitle?: T;
+        youthCardText?: T;
+      };
+  adult?:
+    | T
+    | {
+        heading?: T;
+        intro?: T;
+        body?: T;
+        photo?: T;
+      };
+  youth?:
+    | T
+    | {
+        heading?: T;
+        intro?: T;
+        body?: T;
+        photo?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page_select".
+ */
+export interface ContactPageSelect<T extends boolean = true> {
+  heading?: T;
+  intro?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fees-page_select".
+ */
+export interface FeesPageSelect<T extends boolean = true> {
+  heading?: T;
+  sections?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "privacy-page_select".
+ */
+export interface PrivacyPageSelect<T extends boolean = true> {
+  heading?: T;
+  lastUpdated?: T;
+  intro?: T;
+  sections?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        id?: T;
+      };
+  footerNote?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

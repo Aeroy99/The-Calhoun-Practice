@@ -1,40 +1,34 @@
 import tsconfigPaths from "vite-tsconfig-paths";
 import svgr from "vite-plugin-svgr";
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
-import fs from "fs";
 
-function serveDecapAdmin(): Plugin {
+export default defineConfig(({ mode }) => {
+  if (mode === "production") {
+    const payloadUrl = process.env.VITE_PAYLOAD_URL || "";
+    const isLocal =
+      !payloadUrl ||
+      payloadUrl.includes("localhost") ||
+      payloadUrl.includes("127.0.0.1");
+    if (isLocal) {
+      throw new Error(
+        "VITE_PAYLOAD_URL must be the public CMS origin (not localhost) for production builds.",
+      );
+    }
+  }
+
   return {
-    name: "serve-decap-admin",
-    configureServer(server) {
-      server.middlewares.use((req, res, next) => {
-        const url = req.url?.split("?")[0] ?? "";
-        if (url === "/admin" || url === "/admin/") {
-          const adminHtml = path.resolve(__dirname, "public/admin/index.html");
-          res.setHeader("Content-Type", "text/html");
-          res.end(fs.readFileSync(adminHtml, "utf-8"));
-          return;
-        }
-        next();
-      });
+    plugins: [react(), tailwindcss(), tsconfigPaths(), svgr()],
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      },
+    },
+    build: {
+      minify: process.env.CAPACITY_BUILD_MODE === "preview" ? false : "esbuild",
+      sourcemap: process.env.CAPACITY_BUILD_MODE === "preview",
     },
   };
-}
-
-export default defineConfig({
-  plugins: [serveDecapAdmin(), react(), tailwindcss(), tsconfigPaths(), svgr()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-  build: {
-    // Capacity preview mode: disable minification and enable source maps for debugging
-    minify: process.env.CAPACITY_BUILD_MODE === 'preview' ? false : 'esbuild',
-    sourcemap: process.env.CAPACITY_BUILD_MODE === 'preview' ? true : false,
-  },
-
 });

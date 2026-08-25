@@ -19,6 +19,19 @@ export interface HomeContent {
     quote: string;
     author: string;
   };
+  servicesHeading: string;
+  servicesButtonLabel: string;
+  therapistHeading: string;
+  practiceManager: {
+    heading: string;
+    badge: string;
+    description: string;
+    buttonLabel: string;
+  };
+  location: {
+    heading: string;
+    buttonLabel: string;
+  };
 }
 
 export const DEFAULT_HOME_CONTENT: HomeContent = {
@@ -44,6 +57,21 @@ export const DEFAULT_HOME_CONTENT: HomeContent = {
     quote:
       '"I feel so much more confident and grounded after working with the team. The personalized approach really made a difference in my daily life."',
     author: "Client",
+  },
+  servicesHeading: "How we help:",
+  servicesButtonLabel: "Request a Consultation",
+  therapistHeading: "Meet your therapist",
+  practiceManager: {
+    heading: "A safe space to begin your journey",
+    badge: "Meet Melanie",
+    description:
+      "As the Practice Founder, Melanie is the first friendly voice you'll hear when you reach out. She is dedicated to creating a compassionate, non-clinical environment where you feel truly heard. From your first interaction, her goal is to match you with the right therapist, ensuring confidential care and a safe space to begin your journey.",
+    buttonLabel: "Schedule Your Session",
+  },
+  location: {
+    heading:
+      "We offer in-person sessions in Surrey, and online sessions throughout the UK.",
+    buttonLabel: "Request a Consultation",
   },
 };
 
@@ -85,6 +113,8 @@ export function mapHomeContent(raw: unknown): HomeContent {
   const introduction = asRecord(content.introduction);
   const cta = asRecord(content.cta);
   const testimonial = asRecord(content.testimonial);
+  const practiceManager = asRecord(content.practiceManager ?? content.practice_manager);
+  const location = asRecord(content.location);
 
   return {
     hero: {
@@ -141,6 +171,46 @@ export function mapHomeContent(raw: unknown): HomeContent {
       author: getString(
         testimonial.author ?? content.testimonial_author,
         DEFAULT_HOME_CONTENT.testimonial.author,
+      ),
+    },
+    servicesHeading: getString(
+      content.servicesHeading ?? content.services_heading,
+      DEFAULT_HOME_CONTENT.servicesHeading,
+    ),
+    servicesButtonLabel: getString(
+      content.servicesButtonLabel ?? content.services_button_label,
+      DEFAULT_HOME_CONTENT.servicesButtonLabel,
+    ),
+    therapistHeading: getString(
+      content.therapistHeading ?? content.therapist_heading,
+      DEFAULT_HOME_CONTENT.therapistHeading,
+    ),
+    practiceManager: {
+      heading: getString(
+        practiceManager.heading,
+        DEFAULT_HOME_CONTENT.practiceManager.heading,
+      ),
+      badge: getString(
+        practiceManager.badge,
+        DEFAULT_HOME_CONTENT.practiceManager.badge,
+      ),
+      description: getString(
+        practiceManager.description,
+        DEFAULT_HOME_CONTENT.practiceManager.description,
+      ),
+      buttonLabel: getString(
+        practiceManager.buttonLabel ?? practiceManager.button_label,
+        DEFAULT_HOME_CONTENT.practiceManager.buttonLabel,
+      ),
+    },
+    location: {
+      heading: getString(
+        location.heading,
+        DEFAULT_HOME_CONTENT.location.heading,
+      ),
+      buttonLabel: getString(
+        location.buttonLabel ?? location.button_label,
+        DEFAULT_HOME_CONTENT.location.buttonLabel,
       ),
     },
   };

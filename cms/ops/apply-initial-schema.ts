@@ -1,26 +1,26 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 import pg from "pg";
+
 import { up } from "../src/migrations/20260817_231130_initial.ts";
+import { debugLog } from "../src/lib/debug-log";
+import { loadCmsProductionEnv } from "./load-env.ts";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const cmsRoot = path.resolve(__dirname, "..");
+const REQUIRED_TABLES = [
+  "users_sessions",
+  "users",
+  "media",
+  "payload_kv",
+  "payload_locked_documents",
+  "payload_locked_documents_rels",
+  "payload_preferences",
+  "payload_preferences_rels",
+  "payload_migrations",
+  "home_page",
+] as const;
 
-function getConnectionString() {
-  const env = fs.readFileSync(path.join(cmsRoot, ".env.production.local"), "utf8");
-  const unpooled = env.match(/^DATABASE_URL_UNPOOLED="(.+)"$/m)?.[1];
-  if (!unpooled) {
-    throw new Error("DATABASE_URL_UNPOOLED not found");
-  }
-
-  return unpooled
-    .replace(/([?&])channel_binding=[^&]*&?/g, "$1")
-    .replace(/[?&]$/, "");
-}
+const { connectionString } = loadCmsProductionEnv();
 
 const client = new pg.Client({
-  connectionString: getConnectionString(),
+  connectionString,
   connectionTimeoutMillis: 20000,
 });
 
@@ -30,35 +30,61 @@ const db = {
       dialect: "postgresql",
       casing: "snake_case",
     });
-    await client.query(text, params);
+    try {
+      await client.query(text, params);
+    } catch (error) {
+      const code = error && typeof error === "object" && "code" in error ? error.code : "";
+      if (code === "42P07" || code === "42710" || code === "42701") {
+        return;
+      }
+      throw error;
+    }
   },
 };
 
 try {
   await client.connect();
-  const requiredTables = ["users", "media", "home_page", "payload_migrations"];
   const existing = await client.query(
     "SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename = ANY($1)",
-    [requiredTables],
+    [REQUIRED_TABLES],
   );
-  if (existing.rowCount === requiredTables.length) {
-    console.log("Schema already present; skipping.");
+  const found = existing.rows.map((row) => row.tablename);
+  const missing = REQUIRED_TABLES.filter((table) => !found.includes(table));
+
+  debugLog(
+    "cms/ops/apply-initial-schema.ts",
+    "schema presence check",
+    {
+      foundCount: found.length,
+      requiredCount: REQUIRED_TABLES.length,
+      missingCount: missing.length,
+    },
+    "C",
+  );
+
+  if (missing.length === 0) {
+    console.log("Initial schema already present; skipping.");
     process.exit(0);
   }
-  if (existing.rowCount > 0) {
-    const found = existing.rows.map((r) => r.tablename);
-    const missing = requiredTables.filter((t) => !found.includes(t));
+
+  if (found.length > 0) {
     console.warn(
-      `Partial schema detected (missing: ${missing.join(", ")}). Re-applying migration...`,
+      `Partial schema detected (missing: ${missing.join(", ")}). Applying remaining tables...`,
     );
   }
 
   console.log("Applying initial migration...");
   await up({ db, payload: {}, req: {} });
-  await client.query(
-    "INSERT INTO payload_migrations (name, batch, updated_at, created_at) VALUES ($1, $2, NOW(), NOW())",
-    ["20260817_231130_initial", 1],
+  const migrationRow = await client.query(
+    "SELECT 1 FROM payload_migrations WHERE name = $1 LIMIT 1",
+    ["20260817_231130_initial"],
   );
+  if ((migrationRow.rowCount ?? 0) === 0) {
+    await client.query(
+      "INSERT INTO payload_migrations (name, batch, updated_at, created_at) VALUES ($1, $2, NOW(), NOW())",
+      ["20260817_231130_initial", 1],
+    );
+  }
   console.log("Initial migration applied.");
 } catch (error) {
   console.error("ERR", error instanceof Error ? error.message : error);

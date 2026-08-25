@@ -4,9 +4,9 @@ Two Vercel projects, one GitHub repo. The public Vite site stays as it is. Paylo
 
 ```
 Visitors  →  www.thecalhounpractice.com     (existing Vite project)
-Wife      →  cms.thecalhounpractice.com/admin
+Editors   →  cms.thecalhounpractice.com/admin
 Website   →  GET cms…/api/globals/home-page
-CMS       →  Neon Postgres
+CMS       →  Neon Postgres + Vercel Blob
 ```
 
 Do not put Payload into the existing Vite project. SQLite is local-only.
@@ -18,7 +18,10 @@ Do not put Payload into the existing Vite project. SQLite is local-only.
 - [x] CMS project created: `the-calhoun-practice-cms` (linked from `cms/`)
 - [ ] **You:** accept Neon marketplace terms (one-time browser step — see below)
 - [ ] **You:** add DNS for `cms.thecalhounpractice.com` (A record → `76.76.21.21`)
-- [ ] You will create the first admin account in the browser (no password in git)
+- [ ] **You:** create a Vercel Blob store on the CMS project
+- [ ] **You:** set `PAYLOAD_ADMIN_EMAIL` and `PAYLOAD_ADMIN_PASSWORD` on the CMS project (sensitive)
+
+The first `/admin` account is created by the production build (`payload migrate` + `ensure-admin`). Do not create it by visiting `/admin` in a browser first.
 
 ### Aaron — two actions that unblock production
 
@@ -52,15 +55,18 @@ Git settings for this project (if connecting Git deploys):
 
 ## 3) CMS environment variables (Production + Preview)
 
-**Already set** on `the-calhoun-practice-cms` (Production, Preview, Development):
-
-| Name | Status |
+| Name | Notes |
 |--|--|
-| `PAYLOAD_SECRET` | Set (sensitive) |
+| `PAYLOAD_SECRET` | Long random string |
 | `NEXT_PUBLIC_SERVER_URL` | `https://cms.thecalhounpractice.com` |
 | `PREVIEW_URL` | `https://www.thecalhounpractice.com` |
-| `CORS_ORIGINS` | www + apex + localhost |
-| `DATABASE_URL` | **Pending — added by Neon install** |
+| `CORS_ORIGINS` | `https://www.thecalhounpractice.com,https://thecalhounpractice.com` |
+| `CSRF_ORIGINS` | `https://cms.thecalhounpractice.com` (CMS origin only) |
+| `DATABASE_URL` | Added by Neon |
+| `PAYLOAD_ADMIN_EMAIL` | First admin email |
+| `PAYLOAD_ADMIN_PASSWORD` | 12+ characters, sensitive |
+| `BLOB_READ_WRITE_TOKEN` | From the Blob store |
+| `EMAIL_FROM` / `SMTP_*` | Optional; required for forgot-password email |
 
 ## 4) Deploy CMS
 
@@ -76,6 +82,8 @@ Or:
 vercel --prod --cwd cms
 ```
 
+The CMS `build` script runs `payload migrate`, then `ensure-admin`, then `next build`.
+
 ## 5) Domain
 
 **Done:** `cms.thecalhounpractice.com` is attached to the CMS project.
@@ -88,20 +96,22 @@ A  cms  76.76.21.21
 
 Until DNS propagates, use the `*.vercel.app` URL from the successful deploy for `/admin` and temporarily for `NEXT_PUBLIC_SERVER_URL` if needed.
 
-## 6) First admin + seed
+## 6) First admin + authenticator + passkey
 
-1. Open `/admin` and **create your account** (first visitor becomes admin).
-2. Seed homepage copy against production (uses `DATABASE_URL` from the environment you pass in):
+1. Production build creates the admin from `PAYLOAD_ADMIN_EMAIL` / `PAYLOAD_ADMIN_PASSWORD`.
+2. Open `/admin`, sign in with that email and password.
+3. Forced **Authenticator app** setup: scan the QR code in Google Authenticator, Authy, or 1Password.
+4. On your user account, click **Register a passkey** (Windows Hello / iCloud Keychain / hardware key).
+5. Later logins: password + TOTP, or **Sign in with passkey**.
+6. Invite your wife as an **Editor** (homepage only). She must also complete Authenticator setup, and can add her own passkey.
+
+Seed homepage copy (insert-only unless you pass `--force`):
 
 ```bash
 cd cms
-# one-off: DATABASE_URL and PAYLOAD_SECRET from Vercel, then
-yarn seed
+vercel env pull --cwd cms .env.production.local
+npx tsx ops/seed-production.ts
 ```
-
-Or paste current homepage fields once in **Homepage content** and Save.
-
-3. Invite your wife: Payload **Users** → new user (editor). Send her `https://cms.thecalhounpractice.com/admin` only.
 
 ## 7) Flip the public site (after CMS API works)
 
@@ -110,24 +120,21 @@ On the **existing** www project `the-calhoun-practice`, add:
 | Name | Value |
 |--|--|
 | `VITE_PAYLOAD_URL` | `https://cms.thecalhounpractice.com` |
-| `VITE_CMS_MODE` | `payload` |
 
-Vite bakes these in at **build** time, so redeploy www after setting them.
+Vite bakes this in at **build** time, so redeploy www after setting it. A production www build fails if `VITE_PAYLOAD_URL` is missing or localhost.
 
 Check:
 
 - [ ] `https://cms.thecalhounpractice.com/api/globals/home-page?depth=0` returns JSON
 - [ ] Live Preview in `/admin` shows www and updates before Save
 - [ ] www homepage reflects a Save
-- [ ] If Payload is down, www still shows `public/content/home-content.json`
-
-Do not remove Decap files until Payload has been live and stable.
+- [ ] If Payload is down, www shows the built-in default copy
 
 ## Rollback
 
 - **Copy only:** `yarn cms:restore` (local 5-slot snapshots) or re-Save previous wording in `/admin`
-- **Site source:** keep `VITE_CMS_MODE=decap` and redeploy www
 - **Vercel:** rollback the CMS or www deployment in the dashboard
+- **Neon:** use Neon PITR / snapshots for a full production database. Local backup writes `home-page.json` plus `pg_dump` when `pg_dump` is installed.
 
 ## Local vs production
 
@@ -136,3 +143,5 @@ Do not remove Decap files until Payload has been live and stable.
 | DB | SQLite `cms/payload-demo.db` | Neon Postgres |
 | Editor | `http://localhost:3000/admin` | `https://cms.thecalhounpractice.com/admin` |
 | Site | `http://localhost:5173` | `https://www.thecalhounpractice.com` |
+| First user | `PAYLOAD_ADMIN_*` via `yarn cms:seed` | created during Vercel build |
+| Media | local disk | Vercel Blob |

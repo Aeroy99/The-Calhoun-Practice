@@ -34,8 +34,11 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm dev',
+    command: 'yarn dev',
     reuseExistingServer: true,
     url: 'http://localhost:3000',
+    env: {
+      PAYLOAD_DISABLE_TOTP: 'true',
+    },
   },
 })

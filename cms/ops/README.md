@@ -9,7 +9,8 @@ Up to **5** snapshots in `ops/backups/versions/`.
 Each folder is named with a timestamp, for example `2026-08-17T21-05-00`, and contains:
 
 - `home-page.json` — homepage fields (always)
-- `payload-demo.db` — local SQLite file when present
+- `payload-demo.db` — consistent local SQLite snapshot (`VACUUM INTO`) when SQLite is in use
+- `postgres.sql` — `pg_dump` output when Postgres is in use and `pg_dump` is installed
 - `manifest.json` — what was copied and when
 
 A new backup **deletes the oldest** once more than 5 exist.
@@ -38,7 +39,8 @@ Restore a specific day/time (folder name):
 yarn cms:restore -- 2026-08-17T21-05-00
 ```
 
-Then refresh the website. If Payload is running, restart `yarn cms:dev` after a SQLite file restore.
+- **SQLite local env:** restores the snapshot database file (and removes stale `-wal`/`-shm` files). Restart `yarn cms:dev` if it is running.
+- **Postgres / Neon:** restores `home-page.json` only. The SQLite file in a snapshot is never copied over a Postgres database.
 
 ## Daily schedule (Windows)
 
@@ -49,8 +51,6 @@ Then refresh the website. If Payload is running, restart `yarn cms:dev` after a 
    - Arguments: `-ExecutionPolicy Bypass -File "C:\Users\Aaron\OneDrive\Master Repo - The Calhoun Practice\The-Calhoun-Practice\cms\ops\backup.ps1"`
 4. Confirm it runs whether you are logged in or not, if you want overnight backups
 
-OneDrive already versions files in this repo; the 5-slot rotation is the **intentional** revert path so you are not hunting through OneDrive history.
+## Production
 
-## Production later
-
-When Neon Postgres is live, `yarn cms:backup` still writes `home-page.json` (enough to revert copy). Full database dumps can be added then without changing this folder layout.
+`yarn cms:backup` always writes `home-page.json`. If `pg_dump` is on PATH and `DATABASE_URL` is Postgres, it also writes `postgres.sql`. Full Neon recovery still uses Neon PITR / snapshots; this repo does not replace that.

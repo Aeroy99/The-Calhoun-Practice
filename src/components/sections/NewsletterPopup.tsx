@@ -3,13 +3,18 @@ import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { useSiteChrome } from "@/hooks/useSiteChrome";
+
 export function NewsletterPopup() {
+  const { chrome } = useSiteChrome();
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
 
   useEffect(() => {
-    // Check if user has already seen or closed the popup
+    if (!chrome.newsletter.enabled) {
+      return;
+    }
     const hasSeenPopup = localStorage.getItem("newsletter_popup_seen");
     
     if (!hasSeenPopup) {
@@ -20,7 +25,7 @@ export function NewsletterPopup() {
       
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [chrome.newsletter.enabled]);
 
   const handleClose = () => {
     setIsOpen(false);
@@ -76,10 +81,10 @@ export function NewsletterPopup() {
               
               <div className="p-8 md:p-12 text-center">
                 <h3 className="text-2xl md:text-3xl font-medium text-[var(--color-text-primary)] mb-4 tracking-tight">
-                  Join our newsletter
+                  {chrome.newsletter.heading}
                 </h3>
                 <p className="text-[var(--color-text-primary)] opacity-80 mb-8 leading-relaxed font-light">
-                  Receive insights, resources, and updates directly to your inbox. We send thoughtful content designed to support your relational health.
+                  {chrome.newsletter.description}
                 </p>
                 
                 {status === "success" ? (
@@ -111,7 +116,7 @@ export function NewsletterPopup() {
                       disabled={status === "submitting"}
                       className="w-full bg-[var(--primaryButtonBackgroundColor)] text-white font-medium py-4 uppercase tracking-widest text-sm hover:bg-[var(--darkAccent-hsl)] transition-colors disabled:opacity-70"
                     >
-                      {status === "submitting" ? "Subscribing..." : "Subscribe"}
+                      {status === "submitting" ? "Subscribing..." : chrome.newsletter.buttonLabel}
                     </button>
                   </form>
                 )}

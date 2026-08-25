@@ -1,106 +1,91 @@
-# Payload CMS demo (owned stack)
+# Payload CMS
 
 The CMS lives in **`cms/`**. Folder map, backups, and restore: [`cms/README.md`](../cms/README.md) and [`cms/ops/README.md`](../cms/ops/README.md).
 
-This folder is a **self-hosted Payload 3** app used as the content backend for The Calhoun Practice website demo.
+This is a self-hosted Payload 3 app: the only content backend for The Calhoun Practice website.
 
-It is separate from the public Vite site on purpose:
 - Vite site (`../`) = what visitors see
-- Payload app (`./cms`) = what your wife edits at `/admin`
+- Payload app (`./cms`) = what editors use at `/admin`
 
-## Architecture (where things sit)
+## What she edits in `/admin`
+
+**Website**
+- Menu, footer & social
+- Homepage content
+- About Me
+- Therapy pages (overview, Adult, Kids / Young Adult)
+- Services (the “How we help” cards)
+- Contact, Fees & FAQ, Privacy Policy
+- Photos & files
+
+**Planner notes**
+- Leave a request for Aaron: a new page, social account, photo, or feature
+- He reviews it, replies in the same note, then builds it (or later an agent can read this inbox)
+
+**Accounts**
+- Users (Aaron only)
+
+## Architecture
 
 ```
-Your laptop / future server
-├── Vite website (port 5173 locally, Vercel in production today)
-│   └── ?cms=payload → fetches homepage text from Payload API
+├── Vite website (port 5173 locally, Vercel in production)
+│   └── fetches homepage text from Payload API
 │
-└── Payload CMS (port 3000 locally)          ← YOU maintain this
-    ├── /admin                               ← wife login + forms
-    ├── /api/globals/home-page               ← public read API
-    ├── SQLite file: payload-demo.db         ← owned content store
-    └── schema in src/globals/HomePage.ts    ← you control fields
+└── Payload CMS (port 3000 locally, cms.thecalhounpractice.com in production)
+    ├── /admin
+    ├── /api/globals/home-page
+    ├── SQLite locally / Neon Postgres in production
+    └── schema in src/globals/HomePage.ts
 ```
 
-### What each piece does
+| Piece | Path | Who uses it |
+|--|--|--|
+| Admin UI | `/admin` | Editors |
+| Homepage schema | `cms/src/globals/HomePage.ts` | Developer |
+| Public API | `GET /api/globals/home-page` | Website |
+| Website hook | `src/hooks/useCmsHomeContent.ts` | Site |
 
-| Piece | Path | Who uses it | Your maintenance |
-|--|--|--|--|
-| Admin UI | `http://localhost:3000/admin` | Wife (and you) | Create users, keep Payload updated |
-| Homepage schema | `cms/src/globals/HomePage.ts` | You (developer) | Add/rename editable fields |
-| Database | `cms/payload-demo.db` (SQLite, local demo) | System | Backup the file; later swap to Postgres for production |
-| Public API | `GET /api/globals/home-page` | Website | Keep CORS origins correct |
-| Website hook | `src/hooks/useCmsHomeContent.ts` | Site | Reads Payload when `?cms=payload` |
-
-## Quick start (demo)
+## Quick start
 
 From the repo root:
 
 ```bash
-# 1) Install CMS deps (once)
 yarn --cwd cms install
-
-# 2) Start Payload
 yarn cms:dev
-
-# 3) In another terminal, seed homepage copy (once)
 yarn cms:seed
-
-# 4) Start the public site (if not already running)
-yarn dev:cms
+yarn dev
 ```
 
 Then:
 
-1. Open `http://localhost:3000/admin` and create the first admin account.
-2. In the sidebar open **Homepage content**, edit text, **Save**.
-3. Open `http://localhost:5173/?cms=payload` and refresh to see her edits.
-4. Compare modes at `http://localhost:5173/cms-compare`.
+1. Open `http://localhost:3000/admin` and sign in (admin from `PAYLOAD_ADMIN_EMAIL`).
+2. Complete Authenticator setup, then register a passkey.
+3. Edit pages under **Website**. For a new idea that needs code, open **Planner notes**.
+4. Refresh `http://localhost:5173` to see the saved copy.
 
-Optional env for the Vite site (defaults to `http://localhost:3000`):
+Optional env for the Vite site:
 
 ```bash
 # in repo root .env.local
 VITE_PAYLOAD_URL=http://localhost:3000
 ```
 
-## Wife experience (intentional)
-
-She only needs:
+## Editor experience
 
 1. Browser link to `/admin`
-2. Email + password login
+2. Email + password, then Authenticator (and optional passkey)
 3. Open **Homepage content**
-4. Click **Live Preview** (top of the editor) to see the real website beside/above the form
+4. Click **Live Preview** to see the real website
 5. Type changes — the preview updates before Save
 6. Click **Save** when happy
 
-No GitHub. No terminal. Works on iPhone / Mac / Windows browsers.
-
-### Live Preview (before save)
+### Live Preview
 
 - Config: `cms/src/payload.config.ts` → `admin.livePreview`
 - Website listener: `src/hooks/useCmsHomeContent.ts` via `@payloadcms/live-preview-react`
-- Preview URL env: `PREVIEW_URL` (default `http://localhost:5173/?cms=payload`)
-- Both apps must be running (`yarn cms:dev` + `yarn dev:cms`) for the iframe preview to load
+- Preview URL env: `PREVIEW_URL` (local default `http://localhost:5173`)
+- Both apps must be running (`yarn cms:dev` + `yarn dev`) for the iframe preview to load
 
-## What you maintain long-term
-
-1. **Schema** — edit `HomePage.ts` when she needs new fields, then redeploy CMS.
-2. **Users** — invite her as a user in Payload admin (you stay admin).
-3. **Database** — local demo uses SQLite. For production on Vercel, switch to Postgres (Neon) and keep the same Payload schema.
-4. **Secrets** — `PAYLOAD_SECRET` and DB URL in env (never commit real secrets).
-5. **CORS** — `CORS_ORIGINS` must include the website origin(s).
-6. **Upgrades** — bump `payload` / `@payloadcms/*` versions together in `cms/package.json`.
-
-## Production note (important)
-
-SQLite is ideal for this **local demo**. For a always-on production CMS on Vercel/serverless, use Postgres (e.g. Neon) with `@payloadcms/db-postgres`. The editor UX for your wife stays the same; only the database adapter and env vars change.
-
-## Why not inside the Vite app?
-
-Payload 3 runs inside **Next.js**. Keeping CMS in `cms/` avoids rewriting the whole public site today, while still giving you full ownership of editor + API + database.
-
-## Production (Vercel)
+## Production
 
 Step-by-step: [`payload-vercel-production.md`](./payload-vercel-production.md).

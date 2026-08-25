@@ -8,11 +8,20 @@ export const HomePage: GlobalConfig = {
   slug: "home-page",
   label: "Homepage content",
   admin: {
+    group: "Website",
     description:
       "Edit homepage text. Click Live Preview to see changes on the real site before you Save.",
   },
   access: {
     read: () => true,
+    update: ({ req }) => Boolean(req.user),
+  },
+  custom: {
+    totp: {
+      disableAccessWrapper: {
+        read: true,
+      },
+    },
   },
   fields: [
     {
@@ -116,6 +125,44 @@ export const HomePage: GlobalConfig = {
           label: "Author label",
           required: true,
         },
+      ],
+    },
+    {
+      name: "servicesHeading",
+      type: "text",
+      label: "Services section heading",
+      defaultValue: "How we help:",
+    },
+    {
+      name: "servicesButtonLabel",
+      type: "text",
+      label: "Services bottom button",
+      defaultValue: "Request a Consultation",
+    },
+    {
+      name: "therapistHeading",
+      type: "text",
+      label: "Therapist section heading",
+      defaultValue: "Meet your therapist",
+    },
+    {
+      name: "practiceManager",
+      type: "group",
+      label: "Practice founder section",
+      fields: [
+        { name: "heading", type: "text", required: true },
+        { name: "badge", type: "text", required: true },
+        { name: "description", type: "textarea", required: true },
+        { name: "buttonLabel", type: "text", required: true },
+      ],
+    },
+    {
+      name: "location",
+      type: "group",
+      label: "Location section",
+      fields: [
+        { name: "heading", type: "textarea", required: true },
+        { name: "buttonLabel", type: "text", required: true },
       ],
     },
   ],

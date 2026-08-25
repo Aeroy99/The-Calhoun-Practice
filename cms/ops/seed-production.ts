@@ -1,17 +1,9 @@
-import fs from "fs";
 import pg from "pg";
 
-function getConnectionString() {
-  const env = fs.readFileSync(".env.production.local", "utf8");
-  const unpooled = env.match(/^DATABASE_URL_UNPOOLED="(.+)"$/m)?.[1];
-  if (!unpooled) {
-    throw new Error("DATABASE_URL_UNPOOLED not found");
-  }
+import { loadCmsProductionEnv } from "./load-env.ts";
 
-  return unpooled
-    .replace(/([?&])channel_binding=[^&]*&?/g, "$1")
-    .replace(/[?&]$/, "");
-}
+const force = process.argv.includes("--force");
+const { connectionString } = loadCmsProductionEnv();
 
 const homeSeed = {
   hero_badge_left: "Confidential Care",
@@ -32,7 +24,7 @@ const homeSeed = {
 };
 
 const client = new pg.Client({
-  connectionString: getConnectionString(),
+  connectionString,
   connectionTimeoutMillis: 20000,
 });
 
@@ -40,6 +32,10 @@ try {
   await client.connect();
   const existing = await client.query("SELECT id FROM home_page LIMIT 1");
   if ((existing.rowCount ?? 0) > 0) {
+    if (!force) {
+      console.log("Homepage content already exists; skipping (pass --force to overwrite).");
+      process.exit(0);
+    }
     await client.query(
       `UPDATE home_page SET
         hero_badge_left = $1,
@@ -57,7 +53,7 @@ try {
         updated_at = NOW()`,
       Object.values(homeSeed),
     );
-    console.log("Updated existing Homepage content.");
+    console.log("Updated existing Homepage content (--force).");
   } else {
     await client.query(
       `INSERT INTO home_page (

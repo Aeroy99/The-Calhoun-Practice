@@ -1,5 +1,5 @@
-import React from 'react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { SiteChromeProvider } from "@/hooks/useSiteChrome";
 
 interface SiteWrapperProps {
   children?: React.ReactNode;
@@ -7,6 +7,7 @@ interface SiteWrapperProps {
 
 export function SiteWrapper({ children }: SiteWrapperProps) {
   return (
+    <SiteChromeProvider>
     <div id="siteWrapper" className="clearfix site-wrapper flex flex-col min-h-screen relative bg-[--siteBackgroundColor]">
       <a 
         href="#page" 
@@ -16,5 +17,6 @@ export function SiteWrapper({ children }: SiteWrapperProps) {
       </a>
       {children}
     </div>
+    </SiteChromeProvider>
   );
 }

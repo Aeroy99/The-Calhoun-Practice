@@ -1,15 +1,19 @@
 {
-  "rewrites": [
+  "redirects": [
     {
       "source": "/admin",
-      "destination": "/admin/index.html"
+      "destination": "https://cms.thecalhounpractice.com/admin",
+      "permanent": false
     },
     {
-      "source": "/admin/",
-      "destination": "/admin/index.html"
-    },
+      "source": "/admin/:path*",
+      "destination": "https://cms.thecalhounpractice.com/admin/:path*",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
     {
-      "source": "/((?!admin|content|uploads|assets|favicon\\.svg).*)",
+      "source": "/((?!assets|favicon\\.svg).*)",
       "destination": "/index.html"
     }
   ]

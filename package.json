@@ -6,9 +6,9 @@
   "packageManager": "yarn@1.22.22",
   "scripts": {
     "dev": "vite",
-    "cms:proxy": "npx --yes decap-server@latest",
     "cms:dev": "yarn --cwd cms dev",
     "cms:seed": "yarn --cwd cms seed",
+    "cms:ensure-admin": "yarn --cwd cms ensure-admin",
     "cms:backup": "yarn --cwd cms backup",
     "cms:restore": "yarn --cwd cms restore",
     "dev:cms": "vite --host 0.0.0.0 --port 5173",

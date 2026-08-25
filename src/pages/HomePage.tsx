@@ -15,12 +15,9 @@ import { SvgDefinitions } from "@/components/sections/SvgDefinitions";
 import { NewsletterPopup } from "@/components/sections/NewsletterPopup";
 import { BodyClosing } from "@/components/sections/BodyClosing";
 import { useCmsHomeContent } from "@/hooks/useCmsHomeContent";
-import { useLocation } from "react-router-dom";
-import { CmsModeSwitcher } from "@/components/CmsModeSwitcher";
 
 const HomePage = () => {
-  const location = useLocation();
-  const { content, cmsMode, previewMode } = useCmsHomeContent(location.search);
+  const { content, previewMode } = useCmsHomeContent();
 
   return (
     <SiteWrapper>
@@ -52,7 +49,6 @@ const HomePage = () => {
           author={content.testimonial.author}
         />
         <Cta badge={content.cta.badge} heading={content.cta.heading} />
-        {/* Sections will be added here */}
       </MainContentWrapper>
       <FooterWrapper>
         <Footer />
@@ -60,7 +56,6 @@ const HomePage = () => {
       <NewsletterPopup />
       <SvgDefinitions />
       <BodyClosing />
-      {!previewMode ? <CmsModeSwitcher mode={cmsMode} /> : null}
     </SiteWrapper>
   );
 };

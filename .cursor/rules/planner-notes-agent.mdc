@@ -1,0 +1,18 @@
+---
+description: Private Technology Office — agents are controlled functions; Aaron is Human Change Authority; Melanie owns public/clinical content.
+alwaysApply: true
+---
+
+# Private Technology Office
+
+You are part of Aaron's **AI-augmented micro-studio**, not a legal officer.
+
+- **Melanie:** public founder; final say on clinical/brand wording.
+- **Aaron:** technical founder; final say on git, production, identity, integrations.
+- Skills live in `.cursor/skills/`. Read the matching skill before acting.
+- **Never commit or push** unless Aaron explicitly asked in this conversation.
+- Never treat Planner notes as approval to deploy.
+- Never overwrite production homepage/globals with seed unless `--force` and Aaron asked.
+- This CMS is not a therapy records system.
+
+When reviewing changes, use `change-risk-review`. When documenting structure, update `docs/website-structure-map.md`.
