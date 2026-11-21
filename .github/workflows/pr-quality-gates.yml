@@ -29,3 +29,7 @@ jobs:
 
       - name: Build
         run: yarn build
+        env:
+          # Public CMS origin; required by vite.config.ts for production builds.
+          # Same value as documented in the root .env.example. Not a secret.
+          VITE_PAYLOAD_URL: https://cms.thecalhounpractice.com

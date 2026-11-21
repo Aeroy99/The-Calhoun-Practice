@@ -8,7 +8,7 @@ The public marketing site is a React + TypeScript + Vite + Tailwind app in `src/
 
 ## Commands
 
-Package manager: Yarn 1 (`packageManager` in the root `package.json`, plus `yarn.lock`). Scripts below exist in the root or `cms/package.json`.
+Package manager: Yarn 1 (`packageManager` in the root `package.json`, plus `yarn.lock`). Scripts below exist in the root or `cms/package.json`. Node: CMS `engines` requires `>=20.9.0`; CI (PR Quality Gates) uses Node 22.
 
 Root (marketing site):
 

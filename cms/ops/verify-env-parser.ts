@@ -1,4 +1,4 @@
-import { parseEnvFile, resolveUnpooledDatabaseUrl, loadCmsProductionEnv } from "./load-env.ts";
+import { parseEnvFile, loadCmsProductionEnv } from "./load-env.ts";
 import { debugLog } from "../src/lib/debug-log.ts";
 
 const crlfSample = 'DATABASE_URL_UNPOOLED=postgres://example.neon.tech/neondb\r\nPOSTGRES_URL="postgres://pooler.neon.tech/neondb?pgbouncer=true"\r\n';
